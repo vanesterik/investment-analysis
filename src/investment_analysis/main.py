@@ -1,19 +1,17 @@
 from datetime import date
-from typing import List
 
 import click
 from halo import Halo
 
-from investment_analysis.data.get_raw_data import get_raw_data
-from investment_analysis.data.process_interim_data import process_interim_data
-from investment_analysis.data.process_raw_data import process_raw_data
+from investment_analysis.data.get_fred_data import get_fred_data
+from investment_analysis.data.get_ft_data import get_ft_data
 from investment_analysis.utils.write_to_data_file import write_to_data_file
 
 
 @click.command()
 @click.argument(
     "start_date",
-    default="2019/01/01",
+    default="1985/01/01",
     type=click.STRING,
 )
 @click.argument(
@@ -21,15 +19,7 @@ from investment_analysis.utils.write_to_data_file import write_to_data_file
     default=date.today().strftime("%Y/%m/%d"),
     type=click.STRING,
 )
-@click.option(
-    "--symbols",
-    default=[
-        "127714196",  # ING ARIA - ING Global Index Portfolio Dynamic B EUR Acc
-    ],
-    multiple=True,
-    type=click.STRING,
-)
-def main(start_date: str, end_date: str, symbols: List[str]) -> None:
+def main(start_date: str, end_date: str) -> None:
 
     spinner = Halo(
         color="white",
@@ -39,16 +29,32 @@ def main(start_date: str, end_date: str, symbols: List[str]) -> None:
     )
     spinner.start()
 
+    # Get and process FT data
+    symbols = [
+        "127714196",  # ING ARIA - ING Global Index Portfolio Dynamic B EUR Acc
+    ]
+
     for symbol in symbols:
+        data = get_ft_data(
+            symbol,
+            start_date,
+            end_date,
+        )
+        write_to_data_file(f"{symbol}.csv", data)
 
-        raw_data = get_raw_data(symbol, start_date, end_date)
-        write_to_data_file(f"raw/{symbol}.json", raw_data)
+    # Get and process FRED data
+    ids = [
+        "DGS2",  # 2-Year Treasury Constant Maturity Rate
+        "DGS10",  # 10-Year Treasury Constant Maturity Rate
+    ]
 
-        html_data = process_raw_data(raw_data)
-        write_to_data_file(f"interim/{symbol}.html", html_data)
-
-        data = process_interim_data(html_data)
-        write_to_data_file(f"processed/{symbol}.csv", data)
+    for id in ids:
+        data = get_fred_data(
+            id,
+            start_date.replace("/", "-"),
+            end_date.replace("/", "-"),
+        )
+        write_to_data_file(f"{id}.csv", data)
 
     spinner.stop()
 
