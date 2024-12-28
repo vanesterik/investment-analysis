@@ -1,5 +1,3 @@
-from typing import Optional
-
 from investment_analysis.utils.request_url import request_url
 
 
@@ -15,7 +13,7 @@ def get_raw_data(symbol: str, start_date: str, end_date: str) -> str:
 
     Returns
     -------
-    - Optional[str]: The raw data if successful, None otherwise
+    - str: The raw data from the FT API.
 
     """
 
@@ -23,4 +21,7 @@ def get_raw_data(symbol: str, start_date: str, end_date: str) -> str:
     query_params = f"?startDate={start_date}&endDate={end_date}&symbol={symbol}"
     content = request_url(base_url + query_params)
 
-    return content if content is not None else '{"data":{},"html":{}'
+    if content is None:
+        return '{"data":{},"html":{}}'
+
+    return str(content)

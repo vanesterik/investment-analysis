@@ -5,7 +5,7 @@ description = "Default template for PDM package"
 authors = [
     {name = "Koen van Esterik", email = "koen@vanesterik.dev"},
 ]
-dependencies = ["jupyter>=1.1.1", "polars>=1.18.0", "matplotlib>=3.10.0", "click>=8.1.8", "beautifulsoup4>=4.12.3", "mplfinance>=0.12.10b0", "pyarrow>=18.1.0", "pandas>=2.2.3", "seaborn>=0.13.2"]
+dependencies = ["jupyter>=1.1.1", "polars>=1.18.0", "matplotlib>=3.10.0", "click>=8.1.8", "beautifulsoup4>=4.12.3", "mplfinance>=0.12.10b0", "pyarrow>=18.1.0", "pandas>=2.2.3", "seaborn>=0.13.2", "halo>=0.0.31"]
 requires-python = "==3.11.*"
 readme = "README.md"
 license = {text = "MIT"}
@@ -19,11 +19,16 @@ dev = [
     "ruff>=0.8.4",
     "pytest>=8.3.4",
     "types-requests>=2.32.0.20241016",
+    "autoflake>=2.3.1",
 ]
 
 
 [tool.pdm]
 distribution = true
+
+
+[tool.autoflake]
+check = true
 
 
 [tool.black]

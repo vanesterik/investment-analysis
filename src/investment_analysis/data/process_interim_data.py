@@ -33,11 +33,11 @@ def process_interim_data(html_data: str) -> str:
         data.append(
             [
                 timestamp,
-                float(cols[1].text.strip()),
-                float(cols[2].text.strip()),
-                float(cols[3].text.strip()),
-                float(cols[4].text.strip()),
-                float(cols[5].text.strip()),
+                float(cols[1].text),
+                float(cols[2].text),
+                float(cols[3].text),
+                float(cols[4].text),
+                float(cols[5].find_all("span")[0].text.replace(",", "")),
             ]
         )
 
